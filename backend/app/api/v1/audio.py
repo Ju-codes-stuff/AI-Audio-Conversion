@@ -59,13 +59,13 @@ async def upload_audio(
         language_code=language_code,
         audio_storage_key=storage_key,
     )
-    await db.commit()
+    await db.flush()
 
     # Notify citizen
     await notification_service.notify_grievance_created(
         db, g.id, g.grievance_id, current_user
     )
-    await db.commit()
+    await db.flush()
 
     # Enqueue Celery task
     from app.workers.tasks import process_audio_grievance

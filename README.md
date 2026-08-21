@@ -8,6 +8,7 @@
 
 - [Tech Stack](#tech-stack)
 - [Prerequisites](#prerequisites)
+- [AI Setup — Ollama](#ai-setup--ollama-local-llm)
 - [Project Structure](#project-structure)
 - [First-Time Setup](#first-time-setup)
 - [Starting the Platform](#starting-the-platform)
@@ -27,9 +28,9 @@
 | Async Workers | Celery + Redis |
 | Database | PostgreSQL 18 |
 | Object Storage | MinIO (S3-compatible) |
-| AI — Speech-to-Text | AI4Bharat IndicASR (mock in dev) |
-| AI — Translation | AI4Bharat IndicTrans2 (mock in dev) |
-| AI — Classification | LLM / NLP (mock in dev) |
+| **AI — Speech-to-Text** | **HuggingFace Whisper large-v3** (free) → Bhashini (optional) |
+| **AI — Translation** | **HuggingFace NLLB-200** (all 22 languages, free) → Bhashini (optional) |
+| **AI — Classification** | **Ollama (local Gemma3/Llama)** → Gemini → OpenAI → Mock |
 | Audio Processing | FFmpeg |
 
 ---
@@ -45,13 +46,62 @@ Install these once before anything else:
 | **PostgreSQL 18** | https://www.postgresql.org/download/windows/ | Remember the `postgres` password you set |
 | **Redis** | https://github.com/tporadowski/redis/releases | Download the `.msi` installer — runs as a Windows Service |
 | **FFmpeg** | Run: `winget install --id Gyan.FFmpeg -e` | Restart PowerShell after installing |
+| **Ollama** | Run: `winget install Ollama.Ollama` | Local AI model server |
 
 > **Verify everything is installed** by opening a new PowerShell window and running:
 > ```powershell
 > python --version    # Python 3.11.x
 > node --version      # v18.x or higher
 > ffmpeg -version     # ffmpeg version ...
+> ollama --version    # ollama version 0.x.x
 > ```
+
+---
+
+## AI Setup — Ollama (Local LLM)
+
+Ollama runs the LLM classification **completely on your machine** — free, private, no API keys needed.
+
+### Step 1 — Install Ollama
+
+```powershell
+winget install Ollama.Ollama
+```
+
+After install, Ollama runs automatically as a background service at `http://localhost:11434`.
+
+### Step 2 — Pull a model
+
+Choose based on your machine's RAM:
+
+```powershell
+# Recommended (4GB+ RAM, good quality):
+ollama pull gemma3:4b
+
+# Lighter option (2GB+ RAM, faster):
+ollama pull llama3.2:3b
+
+# High quality (8GB+ RAM):
+ollama pull mistral:7b
+```
+
+> The first pull downloads the model weights (~2–5 GB). Subsequent runs use the cached version.
+
+### Step 3 — Verify Ollama is running
+
+```powershell
+ollama list        # shows downloaded models
+ollama run gemma3:4b "Hello, what is 2+2?"   # quick test
+```
+
+### Changing the model
+
+Edit `backend\.env` and set:
+```
+OLLAMA_MODEL=llama3.2:3b   # or any model you've pulled
+```
+
+---
 
 ---
 

@@ -78,15 +78,18 @@ async def confirm_grievance(
         raise ForbiddenError()
 
     g = await grievance_service.confirm(db, g, body, current_user.id)
-    await db.commit()
-
+    
     # Notify confirmation
     await notification_service.notify_submitted(
         db, g.id, g.grievance_id, current_user
     )
+
+    # Serialize to Pydantic model BEFORE flushing/committing to avoid MissingGreenlet on expired attributes
+    response_data = GrievanceDetail.model_validate(g)
+    
     await db.commit()
 
-    return GrievanceDetail.model_validate(g)
+    return response_data
 
 
 @router.get("/{grievance_id}/track", response_model=GrievanceSummary)

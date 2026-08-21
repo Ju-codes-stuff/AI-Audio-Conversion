@@ -64,16 +64,48 @@ class Settings(BaseSettings):
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
     JWT_REFRESH_TOKEN_EXPIRE_DAYS: int = 30
 
-    # ── AI Services ───────────────────────────────────────────
+    # ── AI Services — provider selection ──────────────────────
+    # Set to false to use a real provider instead of mock
+    ASR_USE_MOCK: bool = True
+    TRANSLATION_USE_MOCK: bool = True
+    LLM_USE_MOCK: bool = True
+
+    # ── Ollama (local LLM — PRIMARY) ──────────────────────────
+    # Install: https://ollama.ai  then run: ollama pull gemma3:4b
+    OLLAMA_BASE_URL: str = "http://localhost:11434/v1"
+    OLLAMA_MODEL: str = "gemma3:4b"          # good balance of quality & speed
+    OLLAMA_TIMEOUT: int = 120                # local inference can be slow
+    OLLAMA_ENABLED: bool = True              # disable if Ollama not installed
+
+    # ── HuggingFace Inference API (ASR + Translation) ─────────
+    # Token optional — rate limit is lower without it
+    # Get free token at: https://huggingface.co/settings/tokens
+    HUGGINGFACE_API_KEY: str = ""
+    HUGGINGFACE_ASR_MODEL: str = "openai/whisper-large-v3"
+    HUGGINGFACE_MT_MODEL: str = "facebook/nllb-200-distilled-600M"
+    HUGGINGFACE_TIMEOUT: int = 60
+
+    # ── Bhashini (optional — best quality for Indic ASR+MT) ───
+    # Register at: https://bhashini.gov.in  (takes 1-2 days)
+    BHASHINI_USER_ID: str = ""
+    BHASHINI_ULCA_API_KEY: str = ""
+    BHASHINI_INFERENCE_API_KEY: str = ""
+    BHASHINI_PIPELINE_ID: str = "64392f96daac500b55c543cd"
+
+    # ── Google Gemini (optional LLM) ──────────────────────────
+    # Free: 1500 req/day at https://aistudio.google.com/apikey
+    GEMINI_API_KEY: str = ""
+    GEMINI_MODEL: str = "gemini-2.5-flash"
+
+    # ── OpenAI (optional LLM fallback) ────────────────────────
+    OPENAI_API_KEY: str = ""
+    OPENAI_MODEL: str = "gpt-4o-mini"
+
+    # Legacy / microservice URLs (still respected if set)
     ASR_SERVICE_URL: str = "http://localhost:8001"
     ASR_SERVICE_TIMEOUT: int = 60
-    ASR_USE_MOCK: bool = True
-
     TRANSLATION_SERVICE_URL: str = "http://localhost:8002"
     TRANSLATION_SERVICE_TIMEOUT: int = 60
-    TRANSLATION_USE_MOCK: bool = True
-
-    LLM_USE_MOCK: bool = True
     LLM_SERVICE_URL: str = "http://localhost:8003"
 
     # ── Notifications ─────────────────────────────────────────

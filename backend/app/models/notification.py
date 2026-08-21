@@ -37,7 +37,7 @@ class Notification(Base):
         UUID(as_uuid=False), ForeignKey("grievances.id", ondelete="SET NULL"), nullable=True, index=True
     )
     channel: Mapped[NotificationChannel] = mapped_column(
-        Enum(NotificationChannel), nullable=False
+        Enum(NotificationChannel, native_enum=False), nullable=False
     )
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     message: Mapped[str] = mapped_column(Text, nullable=False)

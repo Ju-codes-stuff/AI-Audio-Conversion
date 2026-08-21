@@ -4,7 +4,7 @@ Grievance ORM model — core entity of the platform.
 from __future__ import annotations
 
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sqlalchemy import (
     DateTime,
@@ -62,10 +62,10 @@ class Grievance(Base):
         UUID(as_uuid=False), ForeignKey("users.id", ondelete="CASCADE"), index=True
     )
     status: Mapped[GrievanceStatus] = mapped_column(
-        Enum(GrievanceStatus), default=GrievanceStatus.CREATED, nullable=False, index=True
+        Enum(GrievanceStatus, native_enum=False), default=GrievanceStatus.CREATED, nullable=False, index=True
     )
     priority: Mapped[GrievancePriority | None] = mapped_column(
-        Enum(GrievancePriority), nullable=True
+        Enum(GrievancePriority, native_enum=False), nullable=True
     )
 
     # ── Audio ─────────────────────────────────────────────────
@@ -107,8 +107,8 @@ class Grievance(Base):
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        server_default=func.now(),
-        onupdate=func.now(),
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc),
         nullable=False,
     )
 

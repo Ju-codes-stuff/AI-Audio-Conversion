@@ -101,11 +101,11 @@ async def submit_to_government(
         changed_by=current_user.id,
         notes=f"Submitted to government service {body.service_code}",
     )
-    await db.commit()
+    await db.flush()
 
     # Notify citizen
     await notification_service.notify_submitted(db, g.id, g.grievance_id, current_user)
-    await db.commit()
+    await db.flush()
 
     # Get connector type for response
     from sqlalchemy import select as sa_select
@@ -145,7 +145,7 @@ async def sync_government_status(
             db, g, new_status,
             notes=f"Status synced from government: {raw_status}",
         )
-        await db.commit()
+        await db.flush()
     except Exception:
         pass  # No transition needed if status unchanged
 

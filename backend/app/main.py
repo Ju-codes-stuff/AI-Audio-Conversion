@@ -76,9 +76,10 @@ app.add_middleware(
 @app.exception_handler(Exception)
 async def unhandled_exception_handler(request: Request, exc: Exception):
     logger.error("Unhandled exception: %s %s | %s", request.method, request.url, exc, exc_info=True)
+    import traceback
     return JSONResponse(
         status_code=500,
-        content={"detail": "An internal server error occurred. Please try again later."},
+        content={"detail": "An internal server error occurred. Please try again later.", "traceback": "".join(traceback.format_exception(type(exc), exc, exc.__traceback__))},
     )
 
 

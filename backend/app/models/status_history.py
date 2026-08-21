@@ -29,10 +29,10 @@ class StatusHistory(Base):
         nullable=False,
     )
     from_status: Mapped[GrievanceStatus | None] = mapped_column(
-        Enum(GrievanceStatus), nullable=True
+        Enum(GrievanceStatus, native_enum=False), nullable=True
     )
     to_status: Mapped[GrievanceStatus] = mapped_column(
-        Enum(GrievanceStatus), nullable=False
+        Enum(GrievanceStatus, native_enum=False), nullable=False
     )
     changed_by_user_id: Mapped[str | None] = mapped_column(
         UUID(as_uuid=False), ForeignKey("users.id"), nullable=True

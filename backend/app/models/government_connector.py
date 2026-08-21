@@ -51,12 +51,12 @@ class GovernmentConnector(Base):
     )
     connector_name: Mapped[str] = mapped_column(String(255), nullable=False)
     connector_type: Mapped[ConnectorType] = mapped_column(
-        Enum(ConnectorType), nullable=False
+        Enum(ConnectorType, native_enum=False), nullable=False
     )
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     base_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
     auth_type: Mapped[ConnectorAuthType] = mapped_column(
-        Enum(ConnectorAuthType), default=ConnectorAuthType.NONE, nullable=False
+        Enum(ConnectorAuthType, native_enum=False), default=ConnectorAuthType.NONE, nullable=False
     )
     # Encrypted at application level before storage
     auth_config: Mapped[dict | None] = mapped_column(JSONB, nullable=True)

@@ -53,7 +53,7 @@ class GovernmentService(Base):
     # Portal metadata
     portal_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
     submission_method: Mapped[SubmissionMethod] = mapped_column(
-        Enum(SubmissionMethod), default=SubmissionMethod.API, nullable=False
+        Enum(SubmissionMethod, native_enum=False), default=SubmissionMethod.API, nullable=False
     )
     # JSON schema of fields required before submission
     required_fields: Mapped[dict | None] = mapped_column(JSONB, nullable=True)

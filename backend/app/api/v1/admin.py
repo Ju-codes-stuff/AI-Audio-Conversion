@@ -159,8 +159,6 @@ async def update_grievance_status(
         changed_by=admin.id,
         notes=body.notes or f"Manual update by admin {admin.id}",
     )
-    await db.commit()
-
     # Notify citizen of status change
     from sqlalchemy import select as sa_select
     from app.models.user import User
@@ -170,6 +168,7 @@ async def update_grievance_status(
         await notification_service.notify_status_change(
             db, g.id, g.grievance_id, user, body.status.value
         )
-        await db.commit()
 
-    return GrievanceDetail.model_validate(g)
+    response_data = GrievanceDetail.model_validate(g)
+    await db.commit()
+    return response_data
